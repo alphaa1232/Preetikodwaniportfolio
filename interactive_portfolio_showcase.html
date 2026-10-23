@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preeti Kodwani - Data Scientist & AI Engineer Portfolio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0b1120;
+    color: #f1f5f9;
+    scroll-behavior: smooth;
+  }
+
+  /* Glassmorphism utility */
+  .glass-card {
+    background: rgba(18, 28, 51, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgba(167, 139, 250, 0.4);
+    box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.25);
+  }
+
+  /* Custom Grid for Self Driving Car */
+  .grid-car {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .grid-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    background: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+  }
+
+  .grid-cell.obstacle { background: #334155; color: #64748b; }
+  .grid-cell.path { background: #0d9488; color: #ccfbf1; }
+  .grid-cell.start { background: #7c3aed; color: #ffffff; }
+  .grid-cell.goal { background: #f59e0b; color: #ffffff; }
+  .grid-cell.car { background: #3b82f6; color: #ffffff; transform: scale(1.05); }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b1120;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-violet-500 selection:text-white">
+
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-50 glass-card border-b border-slate-800/80 bg-slate-950/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+          PK
+        </div>
+        <div>
+          <a href="#about" class="text-lg font-bold tracking-tight text-white hover:text-violet-400 transition">Preeti Kodwani</a>
+          <p class="text-xs text-violet-400 font-medium">Data Scientist & AI Engineer</p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center space-x-1">
+        <a href="#about" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">About</a>
+        <a href="#video-showcase" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">Platform Video</a>
+        <a href="#projects" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">AI Demos</a>
+        <a href="#experience" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">Experience</a>
+        <a href="#skills" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">Skills</a>
+        <a href="#contact" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition">Contact</a>
+      </nav>
+
+      <!-- CTA Button -->
+      <div class="hidden sm:flex items-center space-x-3">
+        <button onclick="downloadResume()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold text-sm shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:opacity-95 transition">
+          <i class="fa-solid fa-download text-xs"></i> Resume
+        </button>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white focus:outline-none">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Nav Menu -->
+    <div id="mobileMenu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-1 bg-slate-900 border-b border-slate-800">
+      <a href="#about" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">About</a>
+      <a href="#video-showcase" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Platform Video</a>
+      <a href="#projects" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">AI Demos</a>
+      <a href="#experience" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Experience</a>
+      <a href="#skills" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Skills</a>
+      <a href="#contact" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Contact</a>
+      <button onclick="downloadResume()" class="w-full mt-2 text-center px-4 py-2 rounded-xl bg-violet-600 text-white font-semibold text-sm">
+        Download Resume
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    
+    <!-- Hero & About Section -->
+    <section id="about" class="relative py-16 md:py-24 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold tracking-wide uppercase">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Available for AI / ML Roles
+            </div>
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+              Building Next-Gen <br>
+              <span class="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-indigo-300 to-emerald-400">
+                Multi-Modal AI Systems
+              </span>
+            </h1>
+            
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
+              Hi! I'm <strong class="text-white">Preeti Kodwani</strong>, a Data Scientist & Machine Learning Engineer specializing in 
+              Retrieval-Augmented Generation (RAG), Latent Diffusion Video Models, Hybrid Recommendation Engines, and Autonomous Systems.
+            </p>
+
+            <!-- Quick Contact Badge Array -->
+            <div class="flex flex-wrap gap-3 pt-2 text-xs sm:text-sm">
+              <a href="tel:+919869043555" class="glass-card px-3.5 py-2 rounded-xl text-slate-300 hover:text-violet-300 flex items-center gap-2">
+                <i class="fa-solid fa-phone text-emerald-400"></i> +91-9869043555
+              </a>
+              <a href="mailto:sapiencepublishing@outlook.com" class="glass-card px-3.5 py-2 rounded-xl text-slate-300 hover:text-violet-300 flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-violet-400"></i> sapiencepublishing@outlook.com
+              </a>
+              <a href="https://github.com/alphaa1232" target="_blank" class="glass-card px-3.5 py-2 rounded-xl text-slate-300 hover:text-violet-300 flex items-center gap-2">
+                <i class="fa-brands fa-github text-slate-100"></i> github.com/alphaa1232
+              </a>
+            </div>
+
+            <div class="flex flex-wrap gap-4 pt-4">
+              <a href="#projects" class="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm shadow-lg shadow-violet-600/30 transition flex items-center gap-2">
+                Explore AI Demos <i class="fa-solid fa-arrow-right"></i>
+              </a>
+              <a href="#video-showcase" class="px-6 py-3 rounded-xl glass-card hover:bg-slate-800 text-slate-200 font-semibold text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-play text-violet-400"></i> Watch Platform Demo
+              </a>
+            </div>
+          </div>
+
+          <!-- Hero Graphic Stats Card -->
+          <div class="lg:col-span-5">
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden border-slate-700/60 shadow-2xl">
+              <div class="absolute -top-12 -right-12 w-40 h-40 bg-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+                <div>
+                  <p class="text-xs uppercase text-slate-400 tracking-wider">Engineering Snapshot</p>
+                  <h3 class="text-xl font-bold text-white">Preeti Kodwani</h3>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
+                  B.E. IT Graduate
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                  <div class="text-2xl font-extrabold text-violet-400">600+</div>
+                  <div class="text-xs text-slate-400 mt-1">LeetCode Solved</div>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                  <div class="text-2xl font-extrabold text-emerald-400">7.88</div>
+                  <div class="text-xs text-slate-400 mt-1">B.E. CGPA</div>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                  <div class="text-2xl font-extrabold text-indigo-400">RAG & DL</div>
+                  <div class="text-xs text-slate-400 mt-1">AI Specialization</div>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                  <div class="text-2xl font-extrabold text-amber-400">Production</div>
+                  <div class="text-xs text-slate-400 mt-1">Elvyvor & EY AI</div>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-400 flex justify-between items-center">
+                <span>Thadomal Shahani Engineering College</span>
+                <span class="text-slate-500">2017 – 2021</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Video Showcase Section -->
+    <section id="video-showcase" class="py-16 bg-slate-950/60 border-y border-slate-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Elvyvor Digital Platform</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">AI-Powered Kindle-Like Platform</h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-2">
+            Demonstrating our hybrid recommendation system, AI summarizer, reader engagement prediction, and RAG book discussion assistant.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- YouTube Video Player Frame -->
+          <div class="lg:col-span-7">
+            <div class="relative rounded-2xl overflow-hidden glass-card border-slate-700 shadow-2xl aspect-video group">
+              <iframe 
+                class="w-full h-full"
+                src="https://www.youtube.com/embed/VrG6t3Cnazo" 
+                title="Elvyvor Digital Reading & AI Platform Demo" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Video Context & Features -->
+          <div class="lg:col-span-5 space-y-5">
+            <div class="glass-card p-6 rounded-2xl border-slate-800 space-y-4">
+              <div class="flex items-center gap-3">
+                <div class="p-3 rounded-xl bg-violet-600/20 text-violet-400">
+                  <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-white text-lg">Elvyvor Online Library Platform</h3>
+                  <p class="text-xs text-slate-400">Jan 2025 - Present • Lead AI Solutions</p>
+                </div>
+              </div>
+
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Designed and built Deep Learning architecture for a next-gen digital reading & publishing ecosystem. Features RAG-based context search, real-time reader churn prediction, and intelligent quiz generation.
+              </p>
+
+              <div class="space-y-2 text-xs">
+                <div class="flex items-start gap-2 text-slate-300">
+                  <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>Hybrid Recommendations:</strong> Content-based & Collaborative filtering on Transformer Embeddings.</span>
+                </div>
+                <div class="flex items-start gap-2 text-slate-300">
+                  <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>RAG Assistant:</strong> Instant Q&A across multi-thousand book documents.</span>
+                </div>
+                <div class="flex items-start gap-2 text-slate-300">
+                  <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>UPI & Subscriptions:</strong> Automated reader analytics and churn forecasting.</span>
+                </div>
+              </div>
+
+              <div class="pt-2 flex flex-wrap gap-2">
+                <a href="https://youtu.com/VrG6t3Cnazo" target="_blank" class="px-3 py-2 rounded-lg bg-red-600/20 text-red-300 border border-red-500/30 text-xs font-semibold hover:bg-red-600/30 transition flex items-center gap-2">
+                  <i class="fa-brands fa-youtube"></i> Full Video (VrG6t3Cnazo)
+                </a>
+                <a href="https://youtu.com/LOroegLeink" target="_blank" class="px-3 py-2 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold hover:bg-slate-700 transition flex items-center gap-2">
+                  <i class="fa-solid fa-video"></i> Sample Library (LOroegLeink)
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive AI Demos Section -->
+    <section id="projects" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-violet-400 text-xs font-bold uppercase tracking-wider">Live Simulator Showcase</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Interactive AI Project Demos</h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-2">Test-drive interactive browser simulations of Preeti's machine learning projects.</p>
+      </div>
+
+      <!-- Project Switcher Nav -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="demoTabs">
+        <button onclick="switchDemo('rag')" id="tab-rag" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-violet-600 text-white shadow-lg shadow-violet-600/30">
+          <i class="fa-solid fa-file-pdf mr-1.5"></i> RAG PDF Assistant
+        </button>
+        <button onclick="switchDemo('video')" id="tab-video" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">
+          <i class="fa-solid fa-film mr-1.5"></i> Text-To-Video Diffusion
+        </button>
+        <button onclick="switchDemo('car')" id="tab-car" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700">
+          <i class="fa-solid fa-car-side mr-1.5"></i> Autonomous Car (A* & PID)
+        </button>
+      </div>
+
+      <!-- DEMO 1: RAG PDF ASSISTANT -->
+      <div id="demo-rag" class="demo-panel">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border-slate-700">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 mb-6 gap-4">
+            <div>
+              <span class="text-xs text-emerald-400 font-bold uppercase">Streamlit RAG Architecture</span>
+              <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-pdf text-red-400"></i> Chat with your PDF (RAG)
+              </h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs font-semibold border border-violet-500/30">
+              LangChain • Vector Embeddings
+            </span>
+          </div>
+
+          <!-- Mock RAG Interface -->
+          <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 space-y-6">
+            
+            <!-- Upload Box -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-2">Upload your PDF document</label>
+              <div class="flex flex-wrap items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-200">
+                  <i class="fa-solid fa-file-code text-violet-400"></i>
+                  <span>GEMC-51...122025.pdf (52.3KB)</span>
+                </div>
+                <span class="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+                  <i class="fa-solid fa-circle-check"></i> PDF indexed into vector store
+                </span>
+              </div>
+            </div>
+
+            <!-- Question Input Box -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-2">Ask a question about your PDF</label>
+              <div class="flex gap-2">
+                <input 
+                  id="ragQuery" 
+                  type="text" 
+                  value="whats the pdf about ? how many chairs were ordered ? whats the cost of the chair ?" 
+                  class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500 transition"
+                  placeholder="Ask any question..."
+                />
+                <button onclick="runRagQuery()" class="px-5 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition flex items-center gap-2">
+                  <i class="fa-solid fa-magnifying-glass"></i> Ask AI
+                </button>
+              </div>
+            </div>
+
+            <!-- RAG Output Answer -->
+            <div id="ragAnswerBox" class="bg-slate-950/80 p-5 rounded-xl border border-slate-800 space-y-3">
+              <div class="flex items-center justify-between text-amber-400 font-bold text-sm">
+                <span class="flex items-center gap-2"><i class="fa-regular fa-lightbulb"></i> Answer:</span>
+                <span id="ragStatus" class="text-xs text-slate-400 font-normal">Context similarity: 0.94</span>
+              </div>
+              <p id="ragAnswerText" class="text-sm text-slate-200 leading-relaxed">
+                The PDF is about a purchase order or contract for the supply of an "Eezy Mid-back Revolving Chair of Adjustable height with Wheels" for Central Agricultural University, Imphal, Manipur. Only 1 chair was ordered, and the cost of the chair is INR 2,500.
+              </p>
+
+              <!-- Source Chunks Accordion -->
+              <div class="pt-2">
+                <button onclick="toggleChunks()" class="text-xs text-violet-400 hover:text-violet-300 font-medium flex items-center gap-1.5">
+                  <i id="chunkIcon" class="fa-solid fa-chevron-right text-[10px]"></i>
+                  <i class="fa-solid fa-layer-group"></i> Source Chunks Retreived (Vector Search)
+                </button>
+                <div id="chunkContent" class="hidden mt-3 space-y-2 text-xs bg-slate-900 p-3 rounded-lg border border-slate-800 text-slate-300 font-mono">
+                  <div class="p-2 bg-slate-950 rounded"><strong>Chunk 1 [Score 0.94]:</strong> Item: Eezy Mid-back Revolving Chair... Price: INR 2,500.</div>
+                  <div class="p-2 bg-slate-950 rounded"><strong>Chunk 2 [Score 0.89]:</strong> Recipient: Central Agricultural University, Imphal, Manipur. Quantity: 1 unit.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 2: LATENT DIFFUSION / VIDEO SIMULATOR -->
+      <div id="demo-video" class="demo-panel hidden">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border-slate-700">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 mb-6 gap-4">
+            <div>
+              <span class="text-xs text-indigo-400 font-bold uppercase">Generative Video Neural Model</span>
+              <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i> Latent Diffusion Video Generator
+              </h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-xs font-semibold border border-indigo-500/30">
+              PyTorch • Temporal Attention
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Controls -->
+            <div class="lg:col-span-5 space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Text Prompt</label>
+                <textarea id="videoPrompt" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">girl dancing on street. Robots running</textarea>
+              </div>
+
+              <!-- Quick Presets -->
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Preset Prompts (Click to test scene synthesis):</label>
+                <div class="flex flex-wrap gap-1.5 text-[11px]">
+                  <button onclick="setVideoPreset('girl dancing on street. Robots running')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+                    💃 Girl & Robots
+                  </button>
+                  <button onclick="setVideoPreset('Cyberpunk futuristic city with flying cars at sunset')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+                    🏙️ Flying Cars
+                  </button>
+                  <button onclick="setVideoPreset('Deep blue ocean waves at sunset with glowing fish')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+                    🌊 Ocean Waves
+                  </button>
+                  <button onclick="setVideoPreset('Space station in deep galaxy with floating astronauts')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">
+                    🚀 Space Galaxy
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label class="block text-slate-400 mb-1">Frame Rate</label>
+                  <select id="fpsSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-200">
+                    <option value="24">24 FPS</option>
+                    <option value="30" selected>30 FPS</option>
+                    <option value="60">60 FPS</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1">Inference Steps</label>
+                  <select id="stepsSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-200">
+                    <option value="20">20 Steps</option>
+                    <option value="50" selected>50 Steps</option>
+                  </select>
+                </div>
+              </div>
+
+              <button onclick="renderVideoSim()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition shadow-lg shadow-indigo-600/30">
+                <i class="fa-solid fa-clapperboard"></i> Generate Video Preview
+              </button>
+
+              <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-2">
+                <div class="flex justify-between text-slate-400">
+                  <span>Model Status:</span>
+                  <span id="videoModelStatus" class="text-emerald-400 font-semibold">Diffusion Pipeline Ready</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                  <span>Detected Scene:</span>
+                  <span id="detectedSceneTag" class="text-indigo-300 font-mono">Dance & Robots</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Canvas Animated Video Simulated Rendering -->
+            <div class="lg:col-span-7">
+              <div class="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 aspect-video flex items-center justify-center">
+                <canvas id="videoCanvas" class="w-full h-full object-cover"></canvas>
+                <div id="videoOverlay" class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/60 text-[11px] text-slate-300 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span id="canvasStatusText">Live Temporal Latent Stream</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMO 3: SELF-DRIVING CAR SIMULATION -->
+      <div id="demo-car" class="demo-panel hidden">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border-slate-700">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 mb-6 gap-4">
+            <div>
+              <span class="text-xs text-amber-400 font-bold uppercase">Robotics & Autonomous Navigation</span>
+              <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-car text-amber-400"></i> Self-Driving Car Simulator
+              </h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs font-semibold border border-amber-500/30">
+              A* Pathing • Kalman Filter • PID Control
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Grid & Controls -->
+            <div class="lg:col-span-6 space-y-4">
+              <div class="flex justify-between items-center text-xs text-slate-400">
+                <span>Click grid cells to add/remove obstacles</span>
+                <span class="font-mono text-emerald-400" id="carStatusText">Path calculated</span>
+              </div>
+
+              <!-- 10x10 Grid -->
+              <div id="carGrid" class="grid-car bg-slate-950 p-3 rounded-2xl border border-slate-800"></div>
+
+              <div class="flex flex-wrap gap-2 text-xs">
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-900/40 text-purple-300 border border-purple-700/50">
+                  <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Start (0,0)
+                </span>
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-900/40 text-amber-300 border border-amber-700/50">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Goal (9,9)
+                </span>
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-teal-900/40 text-teal-300 border border-teal-700/50">
+                  <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span> Path
+                </span>
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 text-slate-300">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span> Obstacle
+                </span>
+              </div>
+
+              <div class="flex flex-wrap gap-3 pt-2">
+                <button onclick="stepCarMove()" id="btnCarStep" class="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs transition">
+                  <i class="fa-solid fa-forward-step"></i> Step Forward
+                </button>
+                <button onclick="runCarFull()" id="btnCarRun" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition">
+                  <i class="fa-solid fa-play"></i> Run Route
+                </button>
+                <button onclick="resetCarSim()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition">
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Telemetry Logs & Pipeline -->
+            <div class="lg:col-span-6 space-y-4">
+              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Autonomous Pipeline Diagnostics</h4>
+                
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                    <span class="block text-slate-500">Path Steps</span>
+                    <strong id="statPathLen" class="text-violet-400 text-base">0</strong>
+                  </div>
+                  <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                    <span class="block text-slate-500">Current Step</span>
+                    <strong id="statCarStep" class="text-emerald-400 text-base">0</strong>
+                  </div>
+                  <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                    <span class="block text-slate-500">Obstacles</span>
+                    <strong id="statObstacles" class="text-amber-400 text-base">4</strong>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="block text-[11px] font-semibold text-slate-400 mb-1">Real-time Telemetry Log</span>
+                  <div id="carLog" class="h-44 bg-slate-900 p-3 rounded-xl border border-slate-800 font-mono text-[11px] text-teal-300 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+[INIT] Perception pipeline loaded.
+[A*] Optimal path calculated around obstacles.
+[READY] Press "Step Forward" or "Run Route" to start.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Experience & Education Section -->
+    <section id="experience" class="py-16 bg-slate-950/60 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Career Journey</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Experience & Education</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Experience Column -->
+          <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+              <i class="fa-solid fa-briefcase text-violet-400"></i> Work Experience
+            </h3>
+
+            <!-- Elvyvor -->
+            <div class="glass-card p-6 rounded-2xl border-slate-800 space-y-3">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-white text-lg">Lead AI & ML Solutions Developer</h4>
+                  <p class="text-xs text-violet-400 font-medium">Elvyvor (Kindle-like Digital Reading Platform)</p>
+                </div>
+                <span class="text-xs bg-violet-500/10 text-violet-300 border border-violet-500/30 px-2.5 py-1 rounded-full font-semibold">
+                  Jan 2025 - Present
+                </span>
+              </div>
+              <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+                <span>Designed hybrid recommendation systems & semantic book search.</span>
+                <span>Developed AI-powered book summarization, automated quiz generation, and churn prediction.</span>
+                <span>Implemented RAG-based book discussion assistants for interactive reader engagement.</span>
+              </ul>
+            </div>
+
+            <!-- EY -->
+            <div class="glass-card p-6 rounded-2xl border-slate-800 space-y-3">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-white text-lg">AI Engineer (SmartShop AI)</h4>
+                  <p class="text-xs text-indigo-400 font-medium">Ernst & Young (EY)</p>
+                </div>
+                <span class="text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 px-2.5 py-1 rounded-full font-semibold">
+                  Project Engagement
+                </span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Built Multi-Modal AI Assistant ("SmartShop AI") combining ChatGPT vision, reading, and conversational abilities integrated with a live MERN e-commerce architecture.
+              </p>
+            </div>
+          </div>
+
+          <!-- Education & Internships Column -->
+          <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+              <i class="fa-solid fa-graduation-cap text-emerald-400"></i> Education & Internships
+            </h3>
+
+            <div class="glass-card p-6 rounded-2xl border-slate-800 space-y-4">
+              <div class="space-y-1">
+                <div class="flex justify-between">
+                  <h4 class="font-bold text-white">Thadomal Shahani Engineering College</h4>
+                  <span class="text-xs text-slate-400">2017 – 2021</span>
+                </div>
+                <p class="text-xs text-emerald-400 font-semibold">B.E. in Information Technology (CGPA: 7.88)</p>
+              </div>
+
+              <div class="pt-3 border-t border-slate-800/80 space-y-1">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-medium">Junior College (CHM College)</span>
+                  <span class="text-slate-400">2015 – 2017 (70%)</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300 font-medium">Maharashtra State Board (JTS)</span>
+                  <span class="text-slate-400">2014 – 2015 (84%)</span>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-800/80">
+                <h5 class="text-xs font-bold text-slate-300 mb-2">Specialized Internships & Certifications</h5>
+                <div class="flex flex-wrap gap-2 text-[11px]">
+                  <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg">ML Internship</span>
+                  <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg">DL Internship</span>
+                  <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg">Data Analytics</span>
+                  <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg">Azure Cloud</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Skills Matrix Section -->
+    <section id="skills" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-violet-400 text-xs font-bold uppercase tracking-wider">Capabilities</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Technical Skills & Achievements</h2>
+      </div>
+
+      <!-- Skills Category Filter -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8" id="skillsFilter">
+        <button onclick="filterSkills('all', event)" class="skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-violet-600 text-white">All Skills</button>
+        <button onclick="filterSkills('ai', event)" class="skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">AI / ML / DL</button>
+        <button onclick="filterSkills('web', event)" class="skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Web Development</button>
+        <button onclick="filterSkills('tools', event)" class="skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Tools & Cloud</button>
+      </div>
+
+      <!-- Skills Cards Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="skillsGrid">
+        
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="ai">
+          <i class="fa-brands fa-python text-2xl text-blue-400"></i>
+          <p class="text-xs font-bold text-white">Python</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="ai">
+          <i class="fa-solid fa-brain text-2xl text-purple-400"></i>
+          <p class="text-xs font-bold text-white">LangChain / RAG</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="ai">
+          <i class="fa-solid fa-network-wired text-2xl text-emerald-400"></i>
+          <p class="text-xs font-bold text-white">Transformers</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="ai">
+          <i class="fa-solid fa-microchip text-2xl text-amber-400"></i>
+          <p class="text-xs font-bold text-white">TensorFlow / Keras</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="web">
+          <i class="fa-brands fa-react text-2xl text-cyan-400"></i>
+          <p class="text-xs font-bold text-white">React.js</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="web">
+          <i class="fa-brands fa-node-js text-2xl text-green-500"></i>
+          <p class="text-xs font-bold text-white">Node / Express</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="tools">
+          <i class="fa-brands fa-docker text-2xl text-sky-400"></i>
+          <p class="text-xs font-bold text-white">Docker / K8s</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="tools">
+          <i class="fa-brands fa-microsoft text-2xl text-blue-500"></i>
+          <p class="text-xs font-bold text-white">Azure Cloud</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="tools">
+          <i class="fa-solid fa-database text-2xl text-indigo-400"></i>
+          <p class="text-xs font-bold text-white">MongoDB / MySQL</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="tools">
+          <i class="fa-solid fa-chart-column text-2xl text-yellow-400"></i>
+          <p class="text-xs font-bold text-white">Power BI / Tableau</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="tools">
+          <i class="fa-brands fa-git-alt text-2xl text-orange-500"></i>
+          <p class="text-xs font-bold text-white">Git / GitHub</p>
+        </div>
+
+        <div class="skill-card glass-card glass-card-hover p-4 rounded-xl text-center space-y-2" data-category="web">
+          <i class="fa-solid fa-cubes text-2xl text-violet-400"></i>
+          <p class="text-xs font-bold text-white">Django / Flask</p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-slate-950/80 border-t border-slate-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        
+        <h2 class="text-3xl font-extrabold text-white">Let's Connect</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto">
+          Interested in collaboration, machine learning projects, or engineering roles? Feel free to reach out directly.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-4 pt-2">
+          <a href="mailto:sapiencepublishing@outlook.com" class="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> Send Email
+          </a>
+          <a href="tel:+919869043555" class="px-6 py-3 rounded-xl glass-card hover:bg-slate-800 text-slate-200 font-semibold text-sm transition flex items-center gap-2">
+            <i class="fa-solid fa-phone"></i> Call +91-9869043555
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 border border-violet-500 text-white px-4 py-3 rounded-xl shadow-2xl text-xs hidden z-50 flex items-center gap-2">
+    <i class="fa-solid fa-circle-info text-violet-400"></i>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass-card border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <span>© Preeti Kodwani • Data Scientist Portfolio</span>
+      <div class="flex gap-4">
+        <a href="https://github.com/alphaa1232" target="_blank" class="hover:text-slate-300">GitHub</a>
+        <a href="mailto:sapiencepublishing@outlook.com" class="hover:text-slate-300">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // Navigation Mobile Menu
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+
+    function downloadResume() {
+      showToast('Initiating resume download...');
+    }
+
+    // Demo Switcher
+    function switchDemo(demoKey) {
+      document.querySelectorAll('.demo-panel').forEach(panel => panel.classList.add('hidden'));
+      document.getElementById('demo-' + demoKey).classList.remove('hidden');
+
+      const tabs = ['rag', 'video', 'car'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        if (t === demoKey) {
+          btn.className = 'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-violet-600 text-white shadow-lg shadow-violet-600/30';
+        } else {
+          btn.className = 'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-slate-800 text-slate-300 hover:bg-slate-700';
+        }
+      });
+
+      if (demoKey === 'video') {
+        renderVideoSim();
+      }
+    }
+
+    // RAG Simulator Logic
+    function runRagQuery() {
+      const q = document.getElementById('ragQuery').value.trim();
+      const answerBox = document.getElementById('ragAnswerText');
+      const statusBox = document.getElementById('ragStatus');
+
+      if (!q) {
+        showToast('Please enter a query for the RAG assistant.');
+        return;
+      }
+
+      answerBox.innerText = 'Searching vector database and generating answer...';
+      statusBox.innerText = 'Calculating embeddings...';
+
+      setTimeout(() => {
+        statusBox.innerText = 'Context similarity: 0.94';
+        answerBox.innerText = `[RAG Insight]: In response to "${q}", the indexed document confirms the purchase order details for Central Agricultural University. The order includes 1 "Eezy Mid-back Revolving Chair" priced at INR 2,500.`;
+      }, 600);
+    }
+
+    function toggleChunks() {
+      const content = document.getElementById('chunkContent');
+      const icon = document.getElementById('chunkIcon');
+      content.classList.toggle('hidden');
+      icon.classList.toggle('rotate-90');
+    }
+
+    // Video Generator Latent Diffusion Engine
+    let animId = null;
+
+    function setVideoPreset(promptText) {
+      document.getElementById('videoPrompt').value = promptText;
+      renderVideoSim();
+    }
+
+    function renderVideoSim() {
+      const prompt = (document.getElementById('videoPrompt').value || '').toLowerCase();
+      const canvas = document.getElementById('videoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = 640;
+      canvas.height = 360;
+
+      const statusText = document.getElementById('canvasStatusText');
+      const detectedTag = document.getElementById('detectedSceneTag');
+      
+      statusText.innerText = "Synthesizing latent text embeddings...";
+      
+      if (animId) cancelAnimationFrame(animId);
+
+      let frame = 0;
+
+      const isDanceGirl = prompt.includes('girl') || prompt.includes('danc') || prompt.includes('person') || prompt.includes('woman');
+      const isRobot = prompt.includes('robot') || prompt.includes('bot') || prompt.includes('cyborg');
+      const isOcean = prompt.includes('ocean') || prompt.includes('wave') || prompt.includes('water') || prompt.includes('sea');
+      const isSpace = prompt.includes('space') || prompt.includes('galaxy') || prompt.includes('astronaut') || prompt.includes('star');
+
+      if (isDanceGirl || isRobot) detectedTag.innerText = "Street • Dancer & Robots";
+      else if (isOcean) detectedTag.innerText = "Ocean • Dynamic Waves";
+      else if (isSpace) detectedTag.innerText = "Space • Galaxy Orbit";
+      else detectedTag.innerText = "Cyberpunk • Aerial Skyscape";
+
+      const robots = Array.from({length: 4}, (_, i) => ({
+        x: 100 + i * 130,
+        speed: 1.5 + Math.random() * 1.5,
+        dir: i % 2 === 0 ? 1 : -1
+      }));
+
+      const stars = Array.from({length: 50}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        s: Math.random() * 2 + 0.5,
+        alpha: Math.random()
+      }));
+
+      const skyCars = Array.from({length: 8}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * 0.6,
+        speed: 2 + Math.random() * 2,
+        size: 10 + Math.random() * 8
+      }));
+
+      setTimeout(() => {
+        statusText.innerText = "Rendering complete (30 FPS Latent Stream)";
+      }, 500);
+
+      function animate() {
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (isOcean) {
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, '#f59e0b');
+          grad.addColorStop(0.4, '#ec4899');
+          grad.addColorStop(1, '#0f172a');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height * 0.45, 45, 0, Math.PI * 2);
+          ctx.fill();
+
+          for (let w = 0; w < 4; w++) {
+            ctx.fillStyle = `rgba(14, 116, 144, ${0.4 + w * 0.2})`;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            for (let x = 0; x <= canvas.width; x += 15) {
+              const y = canvas.height * 0.55 + w * 25 + Math.sin((x + frame * (3 + w)) * 0.02) * (12 - w * 2);
+              ctx.lineTo(x, y);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.fill();
+          }
+
+        } else if (isSpace) {
+          ctx.fillStyle = '#050814';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          stars.forEach(st => {
+            st.alpha += (Math.random() - 0.5) * 0.05;
+            if (st.alpha < 0.1) st.alpha = 0.1;
+            if (st.alpha > 1) st.alpha = 1;
+            ctx.fillStyle = `rgba(255, 255, 255, ${st.alpha})`;
+            ctx.beginPath();
+            ctx.arc(st.x, st.y, st.s, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          const nebGrad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 20, canvas.width/2, canvas.height/2, 200);
+          nebGrad.addColorStop(0, 'rgba(147, 51, 234, 0.35)');
+          nebGrad.addColorStop(1, 'transparent');
+          ctx.fillStyle = nebGrad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const astroX = canvas.width / 2 + Math.cos(frame * 0.02) * 60;
+          const astroY = canvas.height / 2 + Math.sin(frame * 0.03) * 30;
+          ctx.fillStyle = '#e2e8f0';
+          ctx.beginPath();
+          ctx.arc(astroX, astroY, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#0284c7';
+          ctx.beginPath();
+          ctx.arc(astroX + 4, astroY - 2, 8, 0, Math.PI * 2);
+          ctx.fill();
+
+        } else if (isDanceGirl || isRobot) {
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          for (let b = 0; b < 10; b++) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(b * 68, 120, 58, canvas.height - 120);
+            ctx.fillStyle = '#a855f7';
+            for (let w = 130; w < canvas.height - 100; w += 20) {
+              if ((b + w) % 3 === 0) ctx.fillRect(b * 68 + 15, w, 8, 8);
+            }
+          }
+
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(0, canvas.height - 90, canvas.width, 90);
+
+          const gx = canvas.width / 2;
+          const gy = canvas.height - 110;
+          const danceBounce = Math.abs(Math.sin(frame * 0.15)) * 12;
+
+          ctx.fillStyle = '#f43f5e';
+          ctx.beginPath();
+          ctx.moveTo(gx - 15, gy + 35 - danceBounce);
+          ctx.lineTo(gx + 15, gy + 35 - danceBounce);
+          ctx.lineTo(gx + 25, gy + 70 - danceBounce);
+          ctx.lineTo(gx - 25, gy + 70 - danceBounce);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(gx, gy - danceBounce - 5, 16, 0, Math.PI * 2);
+          ctx.fill();
+
+          robots.forEach((bot, idx) => {
+            bot.x += bot.speed * bot.dir;
+            if (bot.x > canvas.width + 40) bot.x = -30;
+            if (bot.x < -40) bot.x = canvas.width + 30;
+
+            const ry = canvas.height - 85;
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(bot.x - 12, ry - 35, 24, 25);
+          });
+
+        } else {
+          ctx.fillStyle = '#0b1120';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          for (let i = 0; i < 15; i++) {
+            const bx = i * 45;
+            const bh = 120 + (i % 5) * 35;
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(bx, canvas.height - bh, 40, bh);
+          }
+
+          skyCars.forEach(c => {
+            c.x += c.speed;
+            if (c.x > canvas.width + 20) c.x = -20;
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.ellipse(c.x, c.y, c.size, c.size / 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        animId = requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    // A* Self Driving Car Pathing Logic
+    const gridCols = 10;
+    const gridRows = 10;
+    let obstacles = [[3,3], [3,4], [3,5], [6,7]];
+    let carPath = [];
+    let carStepIdx = 0;
+    let carInterval = null;
+
+    function key(p) { return p[0] + ',' + p[1]; }
+
+    function runAStar() {
+      const start = [0,0], goal = [9,9];
+      const obsSet = new Set(obstacles.map(key));
+      const open = [{ p: start, g: 0, f: Math.abs(start[0]-goal[0]) + Math.abs(start[1]-goal[1]) }];
+      const cameFrom = new Map();
+      const gScore = new Map([[key(start), 0]]);
+      const closed = new Set();
+
+      while (open.length > 0) {
+        open.sort((a,b) => a.f - b.f);
+        const curr = open.shift();
+        const ck = key(curr.p);
+
+        if (closed.has(ck)) continue;
+        closed.add(ck);
+
+        if (ck === key(goal)) {
+          let p = [curr.p];
+          let k = ck;
+          while (cameFrom.has(k)) {
+            const prev = cameFrom.get(k);
+            p.push(prev);
+            k = key(prev);
+          }
+          return p.reverse();
+        }
+
+        const neighbors = [[0,1], [1,0], [0,-1], [-1,0]];
+        for (const [dx, dy] of neighbors) {
+          const np = [curr.p[0] + dx, curr.p[1] + dy];
+          const nk = key(np);
+          if (np[0] < 0 || np[0] >= gridRows || np[1] < 0 || np[1] >= gridCols || obsSet.has(nk)) continue;
+
+          const tenG = curr.g + 1;
+          if (tenG < (gScore.get(nk) ?? Infinity)) {
+            gScore.set(nk, tenG);
+            cameFrom.set(nk, curr.p);
+            open.push({ p: np, g: tenG, f: tenG + (Math.abs(np[0]-goal[0]) + Math.abs(np[1]-goal[1])) });
+          }
+        }
+      }
+      return [];
+    }
+
+    function renderCarGrid() {
+      const container = document.getElementById('carGrid');
+      if (!container) return;
+      container.innerHTML = '';
+      const pathSet = new Set(carPath.map(key));
+      const currentCarKey = carPath[carStepIdx] ? key(carPath[carStepIdx]) : key([0,0]);
+
+      for (let r = 0; r < gridRows; r++) {
+        for (let c = 0; c < gridCols; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'grid-cell';
+          const k = r + ',' + c;
+
+          if (k === currentCarKey) {
+            cell.classList.add('car');
+            cell.innerHTML = '<i class="fa-solid fa-car text-xs"></i>';
+          } else if (r === 0 && c === 0) {
+            cell.classList.add('start');
+            cell.innerText = 'S';
+          } else if (r === 9 && c === 9) {
+            cell.classList.add('goal');
+            cell.innerText = 'G';
+          } else if (obstacles.some(o => o[0] === r && o[1] === c)) {
+            cell.classList.add('obstacle');
+            cell.innerText = '✕';
+          } else if (pathSet.has(k)) {
+            cell.classList.add('path');
+            cell.innerText = '•';
+          }
+
+          cell.onclick = () => toggleObstacle(r, c);
+          container.appendChild(cell);
+        }
+      }
+
+      document.getElementById('statPathLen').innerText = carPath.length;
+      document.getElementById('statCarStep').innerText = carStepIdx + 1;
+      document.getElementById('statObstacles').innerText = obstacles.length;
+    }
+
+    function toggleObstacle(r, c) {
+      if ((r === 0 && c === 0) || (r === 9 && c === 9)) return;
+      const idx = obstacles.findIndex(o => o[0] === r && o[1] === c);
+      if (idx >= 0) obstacles.splice(idx, 1);
+      else obstacles.push([r, c]);
+
+      carPath = runAStar();
+      carStepIdx = 0;
+      logCar(`[MAP UPDATE] Obstacle toggled at (${r},${c}). Recalculating path...`);
+      renderCarGrid();
+    }
+
+    function logCar(msg) {
+      const logBox = document.getElementById('carLog');
+      if (!logBox) return;
+      logBox.textContent += '\n' + msg;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function stepCarMove() {
+      if (carStepIdx < carPath.length - 1) {
+        carStepIdx++;
+        renderCarGrid();
+        const pos = carPath[carStepIdx];
+        logCar(`[CONTROL] Move step ${carStepIdx+1} -> Position (${pos[0]}, ${pos[1]}) | Kalman Filter velocity locked.`);
+      } else {
+        logCar(`[GOAL REACHED] Vehicle arrived safely at destination (9,9).`);
+        if (carInterval) clearInterval(carInterval);
+      }
+    }
+
+    function runCarFull() {
+      if (carInterval) clearInterval(carInterval);
+      carStepIdx = 0;
+      renderCarGrid();
+      carInterval = setInterval(() => {
+        if (carStepIdx < carPath.length - 1) {
+          stepCarMove();
+        } else {
+          clearInterval(carInterval);
+        }
+      }, 250);
+    }
+
+    function resetCarSim() {
+      if (carInterval) clearInterval(carInterval);
+      obstacles = [[3,3], [3,4], [3,5], [6,7]];
+      carPath = runAStar();
+      carStepIdx = 0;
+      document.getElementById('carLog').textContent = '[INIT] Simulator reset.\n[A*] Optimal path calculated.';
+      renderCarGrid();
+    }
+
+    // Skills Filter
+    function filterSkills(cat, evt) {
+      document.querySelectorAll('#skillsFilter button').forEach(btn => {
+        btn.className = 'skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700';
+      });
+
+      if (evt && evt.target) {
+        evt.target.className = 'skill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-violet-600 text-white';
+      }
+
+      document.querySelectorAll('.skill-card').forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    window.onload = function() {
+      carPath = runAStar();
+      renderCarGrid();
+      renderVideoSim();
+    };
+  </script>
+</body>
+</html>
